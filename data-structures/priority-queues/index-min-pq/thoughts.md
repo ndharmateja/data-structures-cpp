@@ -24,3 +24,5 @@
 
 ### Thoughts
 - This approach solves the issue of the first approach where we had to swap the elements of the keys array too.
+### TODOS
+1. Use std::move for storing elements in the keys array. Be wary of old key and new key in the change function.
