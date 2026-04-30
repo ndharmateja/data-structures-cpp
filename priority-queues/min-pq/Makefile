@@ -1,3 +1,4 @@
+# AI Generated
 # Compiler and Flags
 CXX      = g++
 CXXFLAGS = -std=c++20 -Wall -Wextra -Wpedantic -O3
