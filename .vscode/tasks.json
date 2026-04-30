@@ -1,0 +1,20 @@
+// AI generated
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Make IndexMinPQ",
+            "type": "shell",
+            "command": "make",
+            "args": ["all"],
+            "options": {
+                "cwd": "${workspaceFolder}/index-min-pq"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": ["$gcc"]
+        }
+    ]
+}

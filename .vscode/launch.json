@@ -1,0 +1,19 @@
+// AI generated
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug IndexMinPQ",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/index-min-pq/test_index_min_pq",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/index-min-pq",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "lldb",
+            "preLaunchTask": "Make IndexMinPQ"
+        }
+    ]
+}
