@@ -95,7 +95,7 @@ public:
         return pq.front();
     }
 
-    T delete_min()
+    T remove_min()
     {
         if (pq.empty())
             throw std::underflow_error("MinPQ is empty.");

@@ -28,13 +28,13 @@ int main()
 
         // Test 2: Extraction Order (Should be 10, 20, 30, 50)
         bool order_correct = true;
-        if (pq.delete_min() != 10)
+        if (pq.remove_min() != 10)
             order_correct = false;
-        if (pq.delete_min() != 20)
+        if (pq.remove_min() != 20)
             order_correct = false;
-        if (pq.delete_min() != 30)
+        if (pq.remove_min() != 30)
             order_correct = false;
-        if (pq.delete_min() != 50)
+        if (pq.remove_min() != 50)
             order_correct = false;
 
         print_test("Extraction order 10 -> 20 -> 30 -> 50", order_correct);
@@ -55,11 +55,11 @@ int main()
         print_test("Heapify root is smallest (expected 1)", pq_heavy.min() == 1);
 
         // Ensure it drains in sorted order
-        int last = pq_heavy.delete_min();
+        int last = pq_heavy.remove_min();
         bool sorted = true;
         while (!pq_heavy.is_empty())
         {
-            int current = pq_heavy.delete_min();
+            int current = pq_heavy.remove_min();
             if (current < last)
                 sorted = false;
             last = current;
