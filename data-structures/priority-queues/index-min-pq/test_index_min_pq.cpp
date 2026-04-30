@@ -50,7 +50,7 @@ void test_initialization()
     std::cout << "\n--- Test Group: Initialization & Empty State ---\n";
     IndexMinPQ<int> pq(10);
 
-    print_test("Newly created PQ is empty", pq.is_empty() == true);
+    print_test("Newly created PQ is empty", pq.empty() == true);
     print_test("Newly created PQ size is 0", pq.size() == 0);
     print_test("min() throws underflow", throws_exception<std::underflow_error>([&]()
                                                                                 { pq.min(); }));

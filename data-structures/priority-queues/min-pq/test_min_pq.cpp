@@ -40,7 +40,7 @@ int main()
             order_correct = false;
 
         print_test("Extraction order 10 -> 20 -> 30 -> 50", order_correct);
-        print_test("Empty check after all deletions", pq.is_empty());
+        print_test("Empty check after all deletions", pq.empty());
     }
     catch (const std::exception &e)
     {
@@ -59,7 +59,7 @@ int main()
         // Ensure it drains in sorted order
         int last = pq_heavy.remove_min();
         bool sorted = true;
-        while (!pq_heavy.is_empty())
+        while (!pq_heavy.empty())
         {
             int current = pq_heavy.remove_min();
             if (current < last)

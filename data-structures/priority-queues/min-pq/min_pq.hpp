@@ -111,7 +111,7 @@ public:
         return min_element;
     }
 
-    bool is_empty() const { return pq.empty(); }
+    bool empty() const { return pq.empty(); }
     int size() const { return static_cast<int>(pq.size()); }
 };
 

@@ -225,7 +225,7 @@ public:
         return user_index;
     }
 
-    bool is_empty() const { return !n; }
+    bool empty() const { return !n; }
     int size() const { return n; }
 };
 
