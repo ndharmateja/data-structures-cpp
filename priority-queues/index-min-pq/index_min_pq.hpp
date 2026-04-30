@@ -15,6 +15,7 @@ class IndexMinPQ
                   "IndexMinPQ requires type T to support operator<");
 
 private:
+    // TODO: elements of keys don't have to be swapped around
     // Instance variables
     // of elements that is present in the array
     // pq[i]   => i is the heap index and pq[i] is the user specified index
