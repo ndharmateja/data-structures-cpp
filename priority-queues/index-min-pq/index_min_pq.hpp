@@ -183,6 +183,7 @@ public:
 
         // Get the keys that are being swapped
         // ! Get them before changing 'n' and swap
+        // ! Make sure to type the variables as const T&, otherwise a copy construtor will be triggered
         const T &removed_key = element_at(heap_index);
         const T &last_element_key = element_at(n - 1);
 
