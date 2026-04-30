@@ -71,7 +71,7 @@ private:
             // If the right child also exists and the right child element
             // is smaller than the left child, then we need to swap ith element
             // with right child, so we increment to_swap index
-            if (to_swap < n - 1 && pq[to_swap + 1] < pq[to_swap])
+            if (to_swap < n - 1 && keys[to_swap + 1] < keys[to_swap])
                 to_swap++;
 
             // If the element at i less than or equal than the smaller child
