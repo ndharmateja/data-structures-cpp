@@ -16,7 +16,6 @@ class IndexMinPQ
 
 private:
     // Instance variables
-    // We don't need the size variable as the vector keeps track of the number
     // of elements that is present in the array
     // pq[i]   => i is the heap index and pq[i] is the user specified index
     // keys[i] => i is the heap index and keys[i] is the actual element
@@ -28,7 +27,8 @@ private:
     std::vector<int> qp;
     std::vector<int> pq;
     std::vector<T> keys;
-    int size;
+    int n;
+    int max_n;
 
     // Helper methods
     void swap(int i, int j)
@@ -65,7 +65,7 @@ private:
     void sink(int i)
     {
         // Run the loop as long as there is a left child
-        int to_swap, n{static_cast<int>(pq.size())};
+        int to_swap;
         while ((to_swap = left_child(i)) < n)
         {
             // If the right child also exists and the right child element
@@ -92,39 +92,37 @@ private:
 
 public:
     // Initialize (not reserve) the vectors with the given max_n
-    MinPQ(int max_n) : size{0}, qp(max_n, -1), pq(max_n), keys(max_n) {}
+    IndexMinPQ(int max_n) : qp(max_n, -1), pq(max_n), keys(max_n), n{0}, max_n{max_n} {}
 
-    void insert(int k, T t)
+    void insert(int k, T key)
     {
-        // TODO: decide which errors
         // Error handling
         // If k is out of bounds
         if (!(0 <= k && k < max_n))
-            throw std::domain_error("Index out of bounds.");
+            throw std::out_of_range("Index out of bounds.");
 
         // If index k is already associated with an element
         if (qp[k] != -1)
-            throw std::domain_error("Index already associated with an element.");
+            throw std::invalid_argument("Index already associated with an element.");
 
         // Insert the item at the end and swim
-        pq[size] = k;
-        keys[size] = t;
-        qp[k] = size;
-        size++;
-        swim(size - 1);
+        pq[n] = k;
+        keys[n] = key;
+        qp[k] = n;
+        n++;
+        swim(n - 1);
     }
 
     void change(int k, T key)
     {
-        // TODO: decide which errors
         // Error handling
         // If k is out of bounds
         if (!(0 <= k && k < max_n))
-            throw std::domain_error("Index out of bounds.");
+            throw std::out_of_range("Index out of bounds.");
 
         // If index k is not associated with any element
         if (qp[k] == -1)
-            throw std::domain_error("Index not associated with any element.");
+            throw std::invalid_argument("Index not associated with any element.");
 
         // Change the item associated with index 'k'
         int heap_index = qp[k];
@@ -148,32 +146,42 @@ public:
         // Error handling
         // If k is out of bounds
         if (!(0 <= k && k < max_n))
-            throw std::domain_error("Index out of bounds.");
+            throw std::out_of_range("Index out of bounds.");
 
         // If index k is not associated with any element
-        if (qp[k] != -1)
-            throw std::domain_error("Index not associated with any element.");
+        if (qp[k] == -1)
+            throw std::invalid_argument("Index not associated with any element.");
 
-        int heap_index = -1;
+        // Get the index of the element in the heap and set it to
+        int heap_index = qp[k];
+
+        // Swap the element with the last element, decrement the n
+        // and remove the given index 'k' from qp
+        swap(heap_index, n - 1);
+        n--;
+        qp[k] = -1;
+
+        // Sink the index where the last element was
+        sink(heap_index);
     }
 
     T min() const
     {
-        if (!size)
+        if (!n)
             throw std::underflow_error("IndexMinPQ is empty.");
         return keys.front();
     }
 
     int min_index() const
     {
-        if (!size)
+        if (!n)
             throw std::underflow_error("IndexMinPQ is empty.");
         return pq.front();
     }
 
     int remove_min()
     {
-        if (!size)
+        if (!n)
             throw std::underflow_error("IndexMinPQ is empty.");
 
         // Get the user index of the minimal element and remove it
@@ -182,8 +190,8 @@ public:
         return user_index;
     }
 
-    bool is_empty() const { return !size; }
-    int size() const { return size; }
+    bool is_empty() const { return !n; }
+    int size() const { return n; }
 };
 
 #endif
