@@ -15,19 +15,24 @@ class IndexMinPQ
                   "IndexMinPQ requires type T to support operator<");
 
 private:
-    // TODO: elements of keys don't have to be swapped around
     // Instance variables
-    // of elements that is present in the array
     // pq[i]   => i is the heap index and pq[i] is the user specified index
-    // keys[i] => i is the heap index and keys[i] is the actual element
-    // pq and keys are parallel arrays where
-    //     pq[i] holds the user specified index and
+    // Essentially pq is the heap array where in each index we are storing the
+    // user index of the element instead of the actual element itself.
+    //
+    // qp[i]   => i is the user specified index and qp[i] is the heap index
+    //            qp[i] is -1 if user didn't associate i with any element
+    // keys[i] => i is the user specified index and keys[i] is the actual element
+    // qp and keys are parallel arrays where i is the user specified index
+    //     qp[i] holds the heap index and
     //     keys[i] holds the corresponding item
-    // qp[i] => i is the user specified index and qp[i] is the heap index
-    //          qp[i] is -1 if user didn't associate i with any element
+    //
+    // Note that if the element at a user index i was removed from the pq, keys[i] need
+    // not necessarily be empty. Since qp[i] is going to be -1 keys[i] is going to be
+    // irrelevant.
     std::vector<int> qp;
-    std::vector<int> pq;
     std::vector<T> keys;
+    std::vector<int> pq;
     int n;
     int max_n;
 
@@ -36,7 +41,6 @@ private:
     {
         // Swap elements at heap indices i and j
         std::swap(pq[i], pq[j]);
-        std::swap(keys[i], keys[j]);
 
         // When we swap elements at heap indices i and j
         // we also need to swap indices pq[i] and pq[j] in the qp array
@@ -45,16 +49,28 @@ private:
         std::swap(qp[user_index_i], qp[user_index_j]);
     }
 
+    /**
+     * This method returns a reference to the element and not a copy
+     */
+    const T &element_at(int heap_index) const
+    {
+        // The actual element for heap index i is keys[pq[i]]
+        // pq[i] is the user index of the element at heap index i
+        // and keys[pq[i]] is the actual element
+        return keys[pq[heap_index]];
+    }
+
     void swim(int i)
     {
+        // i and p are the heap indices
         while (i > 0)
         {
             // We need to keep swapping as long as the parent > child
             int p = parent(i);
 
-            // If keys[p] <= keys[i], we can break
-            // (keys[p] <= keys[i]) <=> !(keys[p] > keys[i]) <=> !(keys[i] < keys[p])
-            if (!(keys[i] < keys[p]))
+            // If element_at(p) <= element_at(i), we can break
+            // (element_at(p) <= element_at(i)) <=> !(element_at(p) > element_at(i)) <=> !(element_at(i) < element_at(p))
+            if (!(element_at(i) < element_at(p)))
                 break;
 
             // Swap i with parent and update i
@@ -72,13 +88,13 @@ private:
             // If the right child also exists and the right child element
             // is smaller than the left child, then we need to swap ith element
             // with right child, so we increment to_swap index
-            if (to_swap < n - 1 && keys[to_swap + 1] < keys[to_swap])
+            if (to_swap < n - 1 && element_at(to_swap + 1) < element_at(to_swap))
                 to_swap++;
 
             // If the element at i less than or equal than the smaller child
             // then we don't need to swap
-            // (keys[i] <= keys[to_swap]) <=> !(keys[i] > keys[to_swap]) <=> !(keys[to_swap] < keys[i])
-            if (!(keys[to_swap] < keys[i]))
+            // (element_at(i) <= element_at(to_swap)) <=> !(element_at(i) > element_at(to_swap)) <=> !(element_at(to_swap) < element_at(i))
+            if (!(element_at(to_swap) < element_at(i)))
                 break;
 
             // Swap with the smaller child and update i
@@ -93,7 +109,7 @@ private:
 
 public:
     // Initialize (not reserve) the vectors with the given max_n
-    IndexMinPQ(int max_n) : qp(max_n, -1), pq(max_n), keys(max_n), n{0}, max_n{max_n} {}
+    IndexMinPQ(int max_n) : qp(max_n, -1), keys(max_n), pq(max_n), n{0}, max_n{max_n} {}
 
     void insert(int k, T key)
     {
@@ -107,9 +123,9 @@ public:
             throw std::invalid_argument("Index already associated with an element.");
 
         // Insert the item at the end and swim
-        pq[n] = k;
-        keys[n] = key;
         qp[k] = n;
+        keys[k] = key;
+        pq[n] = k;
         n++;
         swim(n - 1);
     }
@@ -126,14 +142,14 @@ public:
             throw std::invalid_argument("Index not associated with any element.");
 
         // Change the item associated with index 'k'
-        int heap_index = qp[k];
-        T old_key = keys[heap_index];
-        keys[heap_index] = key;
+        T old_key = keys[k];
+        keys[k] = key;
 
         // swim/sink appropriately based on whether the value increased or decreased
         // If value is decreased, then we only potentially need to swim as heap property
         // is potentially violated with the parent
         // Similarly we potentially need to sink otherwise
+        int heap_index = qp[k];
         if (key < old_key)
             swim(heap_index);
         else
@@ -153,24 +169,41 @@ public:
         if (qp[k] == -1)
             throw std::invalid_argument("Index not associated with any element.");
 
-        // Get the index of the element in the heap and set it to
+        // Get the index of the element in the heap
         int heap_index = qp[k];
+
+        // Optimization: If the heap index itself is n-1, then we are deleting the
+        // last node in the heap in which case no swimming or swapping needed
+        if (heap_index == n - 1)
+        {
+            n--;
+            qp[k] = -1;
+            return;
+        }
+
+        // Get the keys that are being swapped
+        // ! Get them before changing 'n' and swap
+        const T &removed_key = element_at(heap_index);
+        const T &last_element_key = element_at(n - 1);
 
         // Swap the element with the last element, decrement the n
         // and remove the given index 'k' from qp
-        swap(heap_index, n - 1);
-        n--;
+        swap(heap_index, --n);
         qp[k] = -1;
 
-        // Sink the index where the last element was
-        sink(heap_index);
+        // ! The element we removed might be smaller or larger than the last element
+        // So we swim or sink the index based on the value
+        if (last_element_key < removed_key)
+            swim(heap_index);
+        else
+            sink(heap_index);
     }
 
     T min() const
     {
         if (!n)
             throw std::underflow_error("IndexMinPQ is empty.");
-        return keys.front();
+        return element_at(0);
     }
 
     int min_index() const
