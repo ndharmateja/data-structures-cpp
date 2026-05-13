@@ -10,9 +10,9 @@ void testEmptyTrie()
 {
     Trie trie;
     assert(trie.search("apple") == false);
-    assert(trie.startsWith("a") == false);
+    assert(trie.starts_with("a") == false);
     assert(trie.search("") == false);
-    assert(trie.startsWith("") == false);
+    assert(trie.starts_with("") == false);
 
     // Removing from an empty trie shouldn't crash
     trie.remove("apple");
@@ -36,11 +36,11 @@ void testStartsWith()
     Trie trie;
     trie.insert("programming");
 
-    assert(trie.startsWith("p") == true);
-    assert(trie.startsWith("pro") == true);
-    assert(trie.startsWith("programming") == true); // A word is a prefix of itself
-    assert(trie.startsWith("gram") == false);       // Substring, but not a prefix
-    assert(trie.startsWith("programmingly") == false);
+    assert(trie.starts_with("p") == true);
+    assert(trie.starts_with("pro") == true);
+    assert(trie.starts_with("programming") == true); // A word is a prefix of itself
+    assert(trie.starts_with("gram") == false);       // Substring, but not a prefix
+    assert(trie.starts_with("programmingly") == false);
     std::cout << "testStartsWith passed.\n";
 }
 
@@ -52,7 +52,7 @@ void testOverlappingWords()
 
     assert(trie.search("app") == true);
     assert(trie.search("apple") == true);
-    assert(trie.startsWith("appl") == true);
+    assert(trie.starts_with("appl") == true);
     std::cout << "testOverlappingWords passed.\n";
 }
 
@@ -64,12 +64,12 @@ void testRemovalBasic()
 
     trie.remove("testing");
     assert(trie.search("testing") == false);
-    assert(trie.search("tester") == true);   // Sibling word should still exist
-    assert(trie.startsWith("test") == true); // Prefix should still exist because of "tester"
+    assert(trie.search("tester") == true);    // Sibling word should still exist
+    assert(trie.starts_with("test") == true); // Prefix should still exist because of "tester"
 
     trie.remove("tester");
     assert(trie.search("tester") == false);
-    assert(trie.startsWith("test") == false); // No words left with this prefix
+    assert(trie.starts_with("test") == false); // No words left with this prefix
     std::cout << "testRemovalBasic passed.\n";
 }
 
@@ -81,9 +81,9 @@ void testRemovalOverlappingPrefixFirst()
     trie.insert("apple");
 
     trie.remove("app");
-    assert(trie.search("app") == false);    // "app" is no longer a word
-    assert(trie.search("apple") == true);   // "apple" should still exist
-    assert(trie.startsWith("app") == true); // "app" is still a prefix for "apple"
+    assert(trie.search("app") == false);     // "app" is no longer a word
+    assert(trie.search("apple") == true);    // "apple" should still exist
+    assert(trie.starts_with("app") == true); // "app" is still a prefix for "apple"
     std::cout << "testRemovalOverlappingPrefixFirst passed.\n";
 }
 
@@ -96,8 +96,8 @@ void testRemovalOverlappingLongerFirst()
 
     trie.remove("apple");
     assert(trie.search("apple") == false);
-    assert(trie.search("app") == true);       // "app" should still be a word
-    assert(trie.startsWith("appl") == false); // The path to 'e' should theoretically be cleaned up
+    assert(trie.search("app") == true);        // "app" should still be a word
+    assert(trie.starts_with("appl") == false); // The path to 'e' should theoretically be cleaned up
     std::cout << "testRemovalOverlappingLongerFirst passed.\n";
 }
 
@@ -123,7 +123,7 @@ void testEmptyStringEdgeCase()
     // Usually, "" is handled cleanly at the root node.
     trie.insert("");
     assert(trie.search("") == true);
-    assert(trie.startsWith("") == true);
+    assert(trie.starts_with("") == true);
 
     trie.remove("");
     assert(trie.search("") == false);
