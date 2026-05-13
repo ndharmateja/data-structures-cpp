@@ -58,7 +58,18 @@ public:
      * in the trie
      */
     std::string longest_prefix_of(const std::string &s) const;
+
+    /**
+     * Return all the keys in the trie that have the given string
+     * as a prefix
+     */
     std::vector<std::string> keys_with_prefix(const std::string &s) const;
+
+    /**
+     * Returns all the keys in the trie that match the pattern exactly.
+     * "." is used as a wild card.
+     * Eg: "c.t" could return {"cat", "cot", "cut"}
+     */
     std::vector<std::string> keys_that_match(const std::string &s) const;
 };
 
