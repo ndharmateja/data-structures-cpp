@@ -52,7 +52,7 @@ void Trie::insert(const std::string &word)
     curr->is_word = true;
 }
 
-bool Trie::search(const std::string &word)
+bool Trie::search(const std::string &word) const
 {
     // If root is null then we can return false
     if (!root)
@@ -80,7 +80,7 @@ bool Trie::search(const std::string &word)
     return curr->is_word;
 }
 
-bool Trie::starts_with(const std::string &prefix)
+bool Trie::starts_with(const std::string &prefix) const
 {
     // If root is null then we can return false
     if (!root)

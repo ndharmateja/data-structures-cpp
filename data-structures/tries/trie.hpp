@@ -35,8 +35,8 @@ public:
     ~Trie() { delete root; }
 
     void insert(const std::string &word);
-    bool search(const std::string &word);
-    bool starts_with(const std::string &prefix);
+    bool search(const std::string &word) const;
+    bool starts_with(const std::string &prefix) const;
     void remove(const std::string &word) { root = remove(root, word, 0); }
 };
 
