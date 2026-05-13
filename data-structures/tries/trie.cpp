@@ -24,8 +24,8 @@ TrieNode *Trie::remove(TrieNode *node, const std::string &word, int d)
 
 void Trie::insert(const std::string &word)
 {
-    // If root is null (could get null after deletions)
-    // we create it
+    // If root is null we create it
+    // It could be null initially in an empty trie or after deletions
     if (!root)
         root = new TrieNode();
 
@@ -105,4 +105,50 @@ bool Trie::starts_with(const std::string &prefix) const
     // as we'd have returned false otherwise
     // We can directly return true
     return true;
+}
+
+int Trie::len_of_longest_prefix_of(const std::string &s) const
+{
+    // If root is null, then there the trie is empty and we can return
+    // an empty string
+    int prefix_len{0};
+    if (!root)
+        return prefix_len;
+
+    // Traverse the trie from the root character by character using the
+    // characters of the given string and form the result
+    TrieNode *curr{root};
+    int child_idx, word_len{static_cast<int>(s.size())};
+    for (int i = 0; i < word_len; i++)
+    {
+        // The invariant for this loop is that it assumes that curr is going
+        // to be non null
+        // Get the node corresponding to the current character
+        child_idx = s[i] - 'a';
+        curr = curr->children[child_idx];
+
+        // If curr becomes nullptr then we can exit as the curr char 'c'
+        // is not part of the prefix
+        if (!curr)
+            break;
+
+        // At this point there exists a trie node corresponding to the curr char 'c'
+        // and if it is a valid word, this would be the length of the longest prefix
+        // so far
+        prefix_len = i + 1;
+    }
+
+    // We either broke out of the loop early reaching a null trie node
+    // or we ran out of characters in the string s
+    // At this point either way, the result contains the len of the
+    // longest prefix of 's' that is a key of the trie
+    return prefix_len;
+}
+
+std::string Trie::longest_prefix_of(const std::string &s) const
+{
+    // Find the length of the key that is the longest prefix of s
+    // and return the actual prefix using substring
+    int len{len_of_longest_prefix_of(s)};
+    return s.substr(0, len);
 }

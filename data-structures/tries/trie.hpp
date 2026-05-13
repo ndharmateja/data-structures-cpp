@@ -38,6 +38,7 @@ class Trie
 private:
     TrieNode *root;
     TrieNode *remove(TrieNode *node, const std::string &word, int d);
+    int len_of_longest_prefix_of(const std::string &s) const;
 
 public:
     Trie() : root{nullptr} {}
