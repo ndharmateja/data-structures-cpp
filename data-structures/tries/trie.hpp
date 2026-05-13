@@ -43,6 +43,20 @@ private:
     TrieNode *remove(TrieNode *node, const std::string &word, int d);
     int len_of_longest_prefix_of(const std::string &s) const;
 
+    /**
+     * Returns all the keys in the trie that match the pattern exactly
+     * starting from the given node.
+     * Invariant is that we assume that s[:i] is the node corresponding
+     * to the node and is the first 'i' chars of the pattern
+     * and that the buffer's length is also going to be 'i'
+     * Also assumes that node is not null to prevent an extra funcion call.
+     */
+    void collect_keys_that_match(TrieNode *node,
+                                 std::string &buffer,
+                                 const int i, const int pattern_len,
+                                 const std::string &pattern,
+                                 std::vector<std::string> &result) const;
+
 public:
     Trie() : root{nullptr} {}
     ~Trie() { delete root; }
@@ -81,7 +95,7 @@ public:
      * "." is used as a wild card.
      * Eg: "c.t" could return {"cat", "cot", "cut"}
      */
-    std::vector<std::string> keys_that_match(const std::string &s) const;
+    std::vector<std::string> keys_that_match(const std::string &pattern) const;
 };
 
 #endif

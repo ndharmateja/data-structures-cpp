@@ -153,3 +153,98 @@ std::string Trie::longest_prefix_of(const std::string &s) const
     int len{len_of_longest_prefix_of(s)};
     return s.substr(0, len);
 }
+
+void Trie::collect_keys_that_match(TrieNode *node,
+                                   std::string &buffer,
+                                   const int i, const int pattern_len,
+                                   const std::string &pattern,
+                                   std::vector<std::string> &result) const
+{
+    // If the value of i is same as the pattern_len
+    // then we had reached the end of the pattern and we can add the
+    // word corresponding to the current trie node if it is a valid word
+    // Even if it is not a valid, we need to exit the function call
+    // as there is no more recursion to do
+    if (i == pattern_len)
+    {
+        if (!node->is_word)
+            return;
+        result.push_back(buffer);
+        return;
+    }
+
+    // If i is smaller than the pattern's length, we still have to
+    // traverse deeper in to the tree
+    unsigned char c = pattern[i];
+
+    // If the character is a wild card "."
+    // then we have to traverse through all the valid children of the curr node
+    if (c == '.')
+    {
+        // We will traverse through every non-null child of the current node
+        for (int child_idx = 0; child_idx < 26; child_idx++)
+        {
+            // Get the child node and if it is null, we can skip it
+            // We need to maintain the invariant, so we don't call the
+            // recursive call on an empty node
+            TrieNode *child = node->children[child_idx];
+            if (!child)
+                continue;
+
+            // Add the char corresponding to the child node to the buffer
+            // to keep the invariant
+            // buffer has the i chars corresponding to the current node
+            // and in the next recursive call we will add the next char
+            // so that the buffer will have the first i + 1 chars corresponding
+            // to the child node
+            unsigned char child_char = child_idx + 'a';
+            buffer.push_back(child_char);
+            collect_keys_that_match(child, buffer, i + 1, pattern_len, pattern, result);
+
+            // Remove the last char added to the buffer
+            // so that we can traverse to the next child whilst maintaining the invariant
+            buffer.pop_back();
+        }
+
+        // Once we have traversed through all the children of the current node
+        // we can return as there is no more recursion to do
+        return;
+    }
+
+    // If the character is not a wild card "."
+    // then we only traverse the child corresponding to the character
+    int child_idx = c - 'a';
+    TrieNode *child = node->children[child_idx];
+
+    // If the child is null, then it means we don't have it in our trie
+    if (!child)
+        return;
+
+    // Add the char corresponding to the child node to the buffer
+    // and traverse the child node recursively and pop the char off the buffer
+    unsigned char child_char = child_idx + 'a';
+    buffer.push_back(child_char);
+    collect_keys_that_match(child, buffer, i + 1, pattern_len, pattern, result);
+    buffer.pop_back();
+}
+
+std::vector<std::string> Trie::keys_that_match(const std::string &pattern) const
+{
+    // Create the result vector to collect the matching keys
+    // If the root itself is null, then there are no keys
+    // so we can exit
+    std::vector<std::string> result;
+    if (!root)
+        return result;
+
+    // Create the buffer required to collect the keys
+    // The max length of the buffer is the length of the pattern
+    // so we reserve it
+    int pattern_len{static_cast<int>(pattern.size())};
+    std::string buffer;
+    buffer.reserve(pattern_len);
+
+    // Collect the keys that match the pattern by traversing the trie
+    collect_keys_that_match(root, buffer, 0, pattern_len, pattern, result);
+    return result;
+}
