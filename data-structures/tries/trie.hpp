@@ -3,6 +3,7 @@
 
 #include <string>
 #include <array>
+#include <vector>
 
 struct TrieNode
 {
@@ -46,6 +47,14 @@ public:
     bool search(const std::string &word) const;
     bool starts_with(const std::string &prefix) const;
     void remove(const std::string &word) { root = remove(root, word, 0); }
+
+    bool empty() const { return !root; }
+    int size() const { return root ? root->n : 0; }
+
+    // character based operations
+    std::string longest_prefix_of(const std::string &s) const;
+    std::vector<std::string> keys_with_prefix(const std::string &s) const;
+    std::vector<std::string> keys_that_match(const std::string &s) const;
 };
 
 #endif
