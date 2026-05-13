@@ -26,6 +26,9 @@ struct TrieNode
     }
 };
 
+// TODO: 26 is now hardcoded.
+// TODO: Update the 'n' values in the nodes after the insert
+
 /**
  * The invariant we are going to maintain is that every leaf is a valid word.
  * So every time we delete a leaf we are going to make sure that we keep
