@@ -24,6 +24,13 @@ struct TrieNode
     }
 };
 
+/**
+ * The invariant we are going to maintain is that every leaf is a valid word.
+ * So every time we delete a leaf we are going to make sure that we keep
+ * deleting the trie nodes along the path to the root until we reach a non-leaf
+ * or a trie node with a valid word.
+ * So when there are no elements in the trie, the root will be nullptr.
+ */
 class Trie
 {
 private:
