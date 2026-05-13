@@ -28,6 +28,7 @@ struct TrieNode
 
 // TODO: 26 is now hardcoded.
 // TODO: Update the 'n' values in the nodes after the insert
+// TODO: Setup the invariant in the remove method
 
 /**
  * The invariant we are going to maintain is that every leaf is a valid word.
@@ -40,10 +41,20 @@ class Trie
 {
 private:
     TrieNode *root;
+
+    /**
+     * Recursive helper method to remove
+     */
     TrieNode *remove(TrieNode *node, const std::string &word, int d);
+
+    /**
+     * Returns the length of the longest prefix of the given string
+     * that is a key in the trie
+     */
     int len_of_longest_prefix_of(const std::string &s) const;
 
     /**
+     * Recursive helper method to collect the keys that match the pattern.
      * Returns all the keys in the trie that match the pattern exactly
      * starting from the given node.
      * Invariant is that we assume that s[:i] is the node corresponding
@@ -61,9 +72,27 @@ public:
     Trie() : root{nullptr} {}
     ~Trie() { delete root; }
 
+    /**
+     * Inserts the given word into the trie as a key
+     */
     void insert(const std::string &word);
+
+    /**
+     * Returns true if the given word exists in the trie as a key
+     * and false otherwise
+     */
     bool search(const std::string &word) const;
+
+    /**
+     * Returns true if the given prefix exists in the trie (not necessarily as a key)
+     * and false otherwise
+     */
     bool starts_with(const std::string &prefix) const;
+
+    /**
+     * Removes the given word from the trie if it exists
+     * and does nothing otherwise
+     */
     void remove(const std::string &word) { root = remove(root, word, 0); }
 
     /**
