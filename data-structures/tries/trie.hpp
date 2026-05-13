@@ -52,7 +52,15 @@ public:
     bool starts_with(const std::string &prefix) const;
     void remove(const std::string &word) { root = remove(root, word, 0); }
 
+    /**
+     * Returns true if the number of keys in the trie is 0
+     * and false otherwise
+     */
     bool empty() const { return !root; }
+
+    /**
+     * Returns the number of keys (valid words) in the trie
+     */
     int size() const { return root ? root->n : 0; }
 
     // character based operations
