@@ -8,6 +8,7 @@ struct TrieNode
 {
     bool is_word;
     std::array<TrieNode *, 26> children;
+    int n;
     TrieNode() : is_word{false}
     {
         for (int i = 0; i < 26; i++)
