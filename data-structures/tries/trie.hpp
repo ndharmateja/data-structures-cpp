@@ -53,6 +53,10 @@ public:
     int size() const { return root ? root->n : 0; }
 
     // character based operations
+    /**
+     * Returns the longest prefix of the given string that is a valid word
+     * in the trie
+     */
     std::string longest_prefix_of(const std::string &s) const;
     std::vector<std::string> keys_with_prefix(const std::string &s) const;
     std::vector<std::string> keys_that_match(const std::string &s) const;
