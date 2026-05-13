@@ -135,7 +135,8 @@ int Trie::len_of_longest_prefix_of(const std::string &s) const
         // At this point there exists a trie node corresponding to the curr char 'c'
         // and if it is a valid word, this would be the length of the longest prefix
         // so far
-        prefix_len = i + 1;
+        if (curr->is_word)
+            prefix_len = i + 1;
     }
 
     // We either broke out of the loop early reaching a null trie node
