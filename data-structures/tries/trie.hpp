@@ -80,6 +80,14 @@ private:
                                  const std::string &pattern,
                                  std::vector<std::string> &result) const;
 
+    /**
+     * Recursive helper method to collect all the keys that are contained
+     * in the subtrie rooted at the given node
+     * Invariant is that node is assumed to be non-null and the string
+     * in the buffer is the string corresponding to the given node
+     */
+    void collect_all_keys(TrieNode *node, std::string &buffer, std::vector<std::string> &result) const;
+
 public:
     Trie() : root{nullptr} {}
     ~Trie() { delete root; }

@@ -348,3 +348,25 @@ std::vector<std::string> Trie::keys_that_match(const std::string &pattern) const
     collect_keys_that_match(root, buffer, 0, pattern_len, pattern, result);
     return result;
 }
+
+void Trie::collect_all_keys(TrieNode *node, std::string &buffer,
+                            std::vector<std::string> &result) const
+{
+    // If this node is a valid word, we add it to the result
+    if (node->is_word)
+        result.push_back(buffer);
+
+    // We recursively traverse and collect all the keys from each of the child
+    // subtries of the current node
+    for (int child_idx = 0; child_idx < 26; child_idx++)
+    {
+        TrieNode *child_node = node->children[child_idx];
+        if (child_node)
+        {
+            unsigned char child_char = child_idx + 'a';
+            buffer.push_back(child_char);
+            collect_all_keys(child_node, buffer, result);
+            buffer.pop_back();
+        }
+    }
+}
