@@ -5,7 +5,7 @@
  * delete happens without deletion of actual nodes.
  *
  * 1. This trie has a very efficient implementation (iterative) of
- *    insert, search and starts_with unctions
+ *    insert, search and starts_with functions
  * 2. Doesn't maintain any size in the trie nodes.
  * 3. Doesn't have a delete functionality.
  * 4. The root is never null.
