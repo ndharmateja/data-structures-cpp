@@ -2,22 +2,82 @@
 
 TrieNode *Trie::remove(TrieNode *node, const std::string &word, int d)
 {
-    if (!node)
-        return nullptr;
-    if (d == static_cast<int>(word.size()))
-        node->is_word = false;
-    else
+    // If d equals to the word's length
+    // then it means that word[:d] = word[:word_len] (according to the invariant)
+    // is the word corresponding to the given node which is the full word
+    // So if this node corresponds to a full word, we can mark it not a valid word
+    // and decrement the count of this node
+    if (d == static_cast<int>(word.size()) && node->is_word)
     {
-        unsigned char c = word[d];
-        node->children[c - 'a'] = remove(node->children[c - 'a'], word, d + 1);
+        node->is_word = false;
+        node->n--;
     }
 
+    // If d < word's length, it means that we still haven't reached the end of the word
+    // So we check if the appropriate child link is present and call delete on that
+    // recursively
+    else
+    {
+        // ! Note that child_node is a reference to the child_idx index in the
+        // ! children vector so that we can avoid further lookups while accessing/updating
+        int child_idx = word[d] - 'a';
+        TrieNode *&child_node = node->children[child_idx];
+        if (child_node)
+        {
+            // Store the old count to check if the current node's count
+            // should be updated
+            int old_child_n = child_node->n;
+            child_node = remove(child_node, word, d + 1);
+
+            // Get the new child's count and update curr node's count accordingly
+            // There is a possibility that the child's count won't change
+            // if nothing was deleted, in which case we don't have
+            // There is also the possibility that the remove method returns nullptr
+            // if the child node was removed from the trie
+            // We update the count of the curr node
+            // The only possibility of change is that the child's size decreases by 1
+            // or if the child gets deleted
+            // Either way we need to just decrement the curr node's size by 1
+
+            // ! int new_child_n = child_node ? child_node->n : 0
+            // ! if (new_child_n < old_child_n)
+            // !    node->n--;
+            // ! This should be the actual code but what it essentially boils down to
+            // ! is that if the child node becomes null (it wasn't null earlier as we only
+            // ! try to delete the child node if it is not null) or if the size of the child
+            // ! node after delete is not the same as the old count, we can decrement
+            // ! the curr node's count.
+            if (!child_node || child_node->n != old_child_n)
+                node->n--;
+
+            // ! Optimization: This isn't strictly necessary as this logic would be
+            // ! handled at the end of the loop, but if the child node turns out to be
+            // ! not null, then we can safely know that this node isn't going to be deleted
+            // ! so we can return the node itself
+            if (child_node)
+                return node;
+        }
+    }
+
+    // This logic is to check if we even need to delete this particular node
+    // The invariant of the trie is that every leaf should be a valid word
+    // so if a leaf gets deleted, all the nodes along the path to root that don't have
+    // and other children and aren't valid words themselves should also be deleted
+
+    // If this node is a word, then we shouldn't delete it
     if (node->is_word)
         return node;
+
+    // If any of the children exist, then we shouldn't delete this node
     for (int i = 0; i < 26; i++)
         if (node->children[i])
             return node;
 
+    // If we reach here it means that the current node is neither a valid word
+    // nor have any children after the deletion happens
+    // So we can safely remove this node from our trie and since we are deleting
+    // this node we return nullptr so that its parent could accordingly
+    // set its child to nullptr
     delete node;
     return nullptr;
 }

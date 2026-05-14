@@ -44,6 +44,9 @@ private:
 
     /**
      * Recursive helper method to remove
+     * Invariant is that we assume that node is going to be not null
+     * (to prevent an extra function call for the null check)
+     * and word[:d] is the string corresponding to the given node
      */
     TrieNode *remove(TrieNode *node, const std::string &word, int d);
 
