@@ -388,3 +388,33 @@ std::vector<std::string> Trie::keys() const
     return result;
 }
 
+std::vector<std::string> Trie::keys_with_prefix(const std::string &s) const
+{
+    // If root itself is null, then there are no keys to collect
+    std::vector<std::string> result;
+    if (!root)
+        return result;
+
+    // We first find the node that matches the given string
+    // and then we can call the recursive function collect_all_keys on that node
+    TrieNode *curr{root};
+    for (unsigned char c : s)
+    {
+        // Get the node that corresponds to char 'c' in the trie
+        curr = curr->children[c - 'a'];
+
+        // If this is null, it means that we have reached a null trie node
+        // before reaching the end of the prefix, so we can return the empty vector
+        if (!curr)
+            return result;
+    }
+
+    // At this point we have the node that corresponds to the given string
+    // and it is not null
+    // The number of children in the subtrie rooted at the curr node
+    // will be the number of nodes in the result, so we can reserve it
+    std::string buffer{s};
+    result.reserve(curr->n);
+    collect_all_keys(curr, buffer, result);
+    return result;
+}
