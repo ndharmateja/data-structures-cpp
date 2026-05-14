@@ -7,18 +7,10 @@
 
 struct TrieNode
 {
-    bool is_word;
-    std::array<TrieNode *, 26> children;
-    int n;
-    TrieNode() : is_word{false}, n{0}
-    {
-        for (int i = 0; i < 26; i++)
-            children[i] = nullptr;
-    }
+    bool is_word{false};
+    int n{0};
+    std::array<TrieNode *, 26> children{};
 
-    /**
-     * TODO: Memory pool (a single vector<TrieNode>) to manage lifetime
-     */
     ~TrieNode()
     {
         for (auto ptr : children)
@@ -103,6 +95,10 @@ private:
 public:
     Trie() : root{nullptr} {}
     ~Trie() { delete root; }
+
+    // Forbid copying
+    Trie(const Trie &) = delete;
+    Trie &operator=(const Trie &) = delete;
 
     /**
      * Inserts the given word into the trie as a key

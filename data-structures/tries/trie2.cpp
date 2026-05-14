@@ -20,15 +20,10 @@
 
 struct TrieNode
 {
-    bool is_word;
-    int n;
-    std::array<TrieNode *, 26> children;
+    bool is_word{false};
+    int n{0};
+    std::array<TrieNode *, 26> children{};
 
-    TrieNode() : is_word{false}, n{0}
-    {
-        for (int i = 0; i < 26; i++)
-            children[i] = nullptr;
-    }
 
     ~TrieNode()
     {
