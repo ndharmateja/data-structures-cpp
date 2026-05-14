@@ -57,7 +57,7 @@ private:
      * Recursive helper method to collect the keys that match the pattern.
      * Returns all the keys in the trie that match the pattern exactly
      * starting from the given node.
-     * Invariant is that we assume that s[:i] is the node corresponding
+     * Invariant is that we assume that s[:i] is the string corresponding
      * to the node and is the first 'i' chars of the pattern
      * and that the buffer's length is also going to be 'i'
      * Also assumes that node is not null to prevent an extra funcion call.
