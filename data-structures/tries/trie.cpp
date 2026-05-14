@@ -96,34 +96,50 @@ TrieNode *Trie::remove(TrieNode *node, const std::string &word, int d)
     return nullptr;
 }
 
-void Trie::insert(const std::string &word)
+TrieNode *Trie::insert(TrieNode *node, const std::string &word, int d)
 {
-    // If root is null we create it
-    // It could be null initially in an empty trie or after deletions
-    if (!root)
-        root = new TrieNode();
+    // The invariant is that node (if exists) corresponds to the word[:d] prefix
+    // of the word
+    // If the node doesn't exist then we create it (with a count 0)
+    if (!node)
+        node = new TrieNode();
 
-    // Traverse along the trie following each character
-    // and insert new nodes along the path if there aren't any
-    int idx;
-    TrieNode *curr{root};
-    for (unsigned char c : word)
+    // If d == word's length, it means that this is the node that corresponds to
+    // word[:d] = word[:word_len] which is the full word
+    // which means if this wasn't already a word, then we make it a word
+    // and exit (after incrementing the count)
+    if (d == static_cast<int>(word.size()))
     {
-        // We use the reference to the child as we can get away only with one array access
-        // instead of potentially three array accesses
-        idx = c - 'a';
-        TrieNode *&child = curr->children[idx];
-        if (!child)
-            child = new TrieNode();
+        // If it is already a word, then this word already exists
+        // and we don't need to do anything at all
+        if (node->is_word)
+            return node;
 
-        // Update the curr pointer
-        curr = child;
+        // At this point the node is not a valid word, so we make it a valid word
+        // and increment its count and exit the function as there is nothing else to do
+        node->is_word = true;
+        node->n++;
+        return node;
     }
 
-    // At this point the trie node corresponds the given word
-    // Whether or not it was already there, at this point this node
-    // represents a full word, so we mark the is_word to be true
-    curr->is_word = true;
+    // If d < word's length, we need to continue the insertion
+    int child_idx = word[d] - 'a';
+
+    // ! Note that child_node is a reference to the element at the
+    // ! child_idx in the children vector
+    TrieNode *&child_node = node->children[child_idx];
+
+    // We are storing the old count where we need to insert to figure out if we need to
+    // increment the count of the current node
+    int old_count = child_node ? child_node->n : 0;
+    child_node = insert(child_node, word, d + 1);
+
+    // If the child's count changed after the insertion, it means that a new key was
+    // successfully added to the trie (as a descendant of the current node)
+    // so we increment the count of the current node and return it
+    if (child_node->n != old_count)
+        node->n++;
+    return node;
 }
 
 bool Trie::search(const std::string &word) const

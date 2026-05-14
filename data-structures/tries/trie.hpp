@@ -10,7 +10,7 @@ struct TrieNode
     bool is_word;
     std::array<TrieNode *, 26> children;
     int n;
-    TrieNode() : is_word{false}
+    TrieNode() : is_word{false}, n{0}
     {
         for (int i = 0; i < 26; i++)
             children[i] = nullptr;
@@ -27,8 +27,6 @@ struct TrieNode
 };
 
 // TODO: 26 is now hardcoded.
-// TODO: Update the 'n' values in the nodes after the insert
-// TODO: Setup the invariant in the remove method
 
 /**
  * The invariant we are going to maintain is that every leaf is a valid word.
@@ -41,6 +39,16 @@ class Trie
 {
 private:
     TrieNode *root;
+
+    /**
+     * Recursively helper method to insert
+     * Invariant is that node (if exists) would correspond to the word[:d] prefix
+     * and if the node doesn't exist, it would be created.
+     *
+     * ! The given node need not be null unlike the invariants of the remove
+     * ! collect_keys_that_match methods
+     */
+    TrieNode *insert(TrieNode *node, const std::string &word, int d);
 
     /**
      * Recursive helper method to remove
@@ -78,7 +86,7 @@ public:
     /**
      * Inserts the given word into the trie as a key
      */
-    void insert(const std::string &word);
+    void insert(const std::string &word) { root = insert(root, word, 0); }
 
     /**
      * Returns true if the given word exists in the trie as a key
