@@ -1,5 +1,19 @@
 #include "trie.hpp"
 
+void Trie::remove(const std::string &word)
+{
+    // The root could be null, in which case we don't have any nodes
+    // in our trie to be able to delete
+    // We have to do this check as the remove method has an invariant
+    // that the node passed to it shouldn't be null
+    if (!root)
+        return;
+
+    // If root is not null then we know there is atleast one valid word in
+    // the trie as the invariant is that every leaf is a valid word
+    root = remove(root, word, 0);
+}
+
 TrieNode *Trie::remove(TrieNode *node, const std::string &word, int d)
 {
     // If d equals to the word's length

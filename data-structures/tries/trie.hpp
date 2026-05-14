@@ -96,7 +96,7 @@ public:
      * Removes the given word from the trie if it exists
      * and does nothing otherwise
      */
-    void remove(const std::string &word) { root = remove(root, word, 0); }
+    void remove(const std::string &word);
 
     /**
      * Returns true if the number of keys in the trie is 0
