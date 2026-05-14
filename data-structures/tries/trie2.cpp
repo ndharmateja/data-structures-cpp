@@ -41,8 +41,6 @@ class Trie
 {
 private:
     TrieNode *root;
-    Trie() : root{new TrieNode()} {}
-    ~Trie() { delete root; }
 
     /**
      * Recursively helper method to insert
@@ -163,6 +161,17 @@ private:
     }
 
 public:
+    Trie() : root{new TrieNode()} {}
+    ~Trie() { delete root; }
+
+    TrieNode *get_root() { return root; }
+
+    /**
+     * ! Root is never null. So we can directly return root's size.
+     */
+    int size() { return root->n; }
+    bool empty() { return root->n == 0; }
+
     /**
      * Inserts the given word into the trie as a key
      */
