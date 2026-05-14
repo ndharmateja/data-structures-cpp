@@ -88,6 +88,16 @@ private:
      */
     void collect_all_keys(TrieNode *node, std::string &buffer, std::vector<std::string> &result) const;
 
+    /**
+     * Recursive helper method to search the given pattern
+     * in the subtrie rooted at the given node
+     * Invariant is that node is not null and the node's corresponding
+     * string matches pattern[:d]
+     */
+    bool search_pattern(TrieNode *node,
+                        const int d, const int pattern_len,
+                        const std::string &pattern) const;
+
 public:
     Trie() : root{nullptr} {}
     ~Trie() { delete root; }
@@ -150,6 +160,13 @@ public:
      * Eg: "c.t" could return {"cat", "cot", "cut"}
      */
     std::vector<std::string> keys_that_match(const std::string &pattern) const;
+
+    /**
+     * Returns true if a string exists as a key in the trie that matches
+     * the given pattern
+     * It is like keys_that_match function except this returns a boolean
+     */
+    bool search_pattern(const std::string &pattern) const;
 };
 
 #endif

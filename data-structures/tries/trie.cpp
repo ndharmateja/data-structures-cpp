@@ -418,3 +418,56 @@ std::vector<std::string> Trie::keys_with_prefix(const std::string &s) const
     collect_all_keys(curr, buffer, result);
     return result;
 }
+
+bool Trie::search_pattern(TrieNode *node,
+                          const int d, const int pattern_len,
+                          const std::string &pattern) const
+{
+    // If d equals to the pattern length
+    // according to the invariant, node matches pattern[:idx] = pattern[:pattern_len]
+    // which is the whole string and since the invariant is that node is not-null
+    // we had found a match
+    if (d == pattern_len)
+        return true;
+
+    // At this point d is less than pattern_len, so we continue looking for
+    // the pattern in the subtries
+    // If the next char is a wildcard ".", then we have to look among
+    // all the children as any of them could be the match
+    unsigned char c = pattern[d];
+    if (c == '.')
+    {
+        // We only call the recursive function on non-null children to maintain
+        // the invariant and if none of the children have the match, we can
+        // return false
+        for (auto child : node->children)
+            if (child && search_pattern(child, d + 1, pattern_len, pattern))
+                return true;
+
+        // If we reach here then the pattern is not matched by the subtries
+        // rooted at each of the children
+        // So we can return false
+        return false;
+    }
+
+    // At this point pattern[d] is not a wild card, so we look for the pattern
+    // in that particular child
+    // If that child itself is null, then we can return false
+    // otherwise we return whatever the recursive function returns
+    auto child = node->children[c - 'a'];
+    return child
+               ? search_pattern(child, d + 1, pattern_len, pattern)
+               : false;
+}
+
+bool Trie::search_pattern(const std::string &pattern) const
+{
+    // If the root is null, then the pattern won't exist in the trie
+    if (!root)
+        return false;
+
+    // We need the above check to maintain the invariant of the search_pattern
+    // helper recursive function
+    int pattern_len{static_cast<int>(pattern.size())};
+    return search_pattern(root, 0, pattern_len, pattern);
+}
