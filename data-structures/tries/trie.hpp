@@ -26,7 +26,8 @@ struct TrieNode
     }
 };
 
-// TODO: 26 is now hardcoded.
+// TODO: 26 is now hardcoded. Custom alphabet.
+// TODO: is there a word matching the given pattern? say "c.t.."
 
 /**
  * The invariant we are going to maintain is that every leaf is a valid word.
