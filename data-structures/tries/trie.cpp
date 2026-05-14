@@ -71,6 +71,16 @@ TrieNode *Trie::remove(TrieNode *node, const std::string &word, int d)
             if (child_node)
                 return node;
         }
+
+        // If the child node is nullptr
+        // ! Optimization: This isn't strictly necessary as this logic would be
+        // ! handled at the end of the loop
+        // ! But if we reach this point, it means that the given word is not part of the
+        // ! trie as we reached a null child node while traversing the characters of the
+        // ! string. In this case, we don't need to do any modifications to the trie
+        // ! and just exit
+        else
+            return node;
     }
 
     // This logic is to check if we even need to delete this particular node
