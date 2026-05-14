@@ -370,3 +370,21 @@ void Trie::collect_all_keys(TrieNode *node, std::string &buffer,
         }
     }
 }
+
+std::vector<std::string> Trie::keys() const
+{
+    // If root is null, then there aren't any keys to collect
+    if (!root)
+        return;
+
+    // We needed the above check as the invariant of the collect_all_keys
+    // method is that the node that we pass to it should be non-null
+    std::vector<std::string> result;
+    result.reserve(root->n);
+
+    // Collect all the keys in the trie rooted at the root and return the result
+    std::string buffer;
+    collect_all_keys(root, buffer, result);
+    return result;
+}
+

@@ -140,6 +140,11 @@ public:
     std::vector<std::string> keys_with_prefix(const std::string &s) const;
 
     /**
+     * Returns all the keys in the trie
+     */
+    std::vector<std::string> keys() const;
+
+    /**
      * Returns all the keys in the trie that match the pattern exactly.
      * "." is used as a wild card.
      * Eg: "c.t" could return {"cat", "cot", "cut"}
